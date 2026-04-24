@@ -169,6 +169,92 @@
       display: none;
     }
 
+    /* ── Phone verification ────────────────────────────── */
+    .tel-row { display: flex; gap: 8px; margin-bottom: 8px; }
+    .tel-row .field { flex: 1; margin-bottom: 0; }
+    .btn-otp {
+      flex-shrink: 0;
+      padding: 0 16px;
+      height: 44px;
+      background: #1a1a4e;
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: opacity .2s;
+      align-self: flex-end;
+    }
+    .btn-otp:disabled { opacity: .4; cursor: not-allowed; }
+    .btn-otp:hover:not(:disabled) { opacity: .85; }
+
+    .verified-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-radius: 8px;
+      padding: 6px 12px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #16a34a;
+      margin-bottom: 12px;
+    }
+
+    .otp-box {
+      background: #faf9ff;
+      border: 1.5px solid #ede9fe;
+      border-radius: 12px;
+      padding: 14px;
+      margin-bottom: 14px;
+    }
+    .otp-box label {
+      display: block;
+      font-size: 11px;
+      font-weight: 600;
+      color: #6B46C1;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+    .otp-hint { font-size: 11px; color: #9ca3af; margin-bottom: 8px; }
+    .otp-row { display: flex; gap: 8px; }
+    .otp-input {
+      flex: 1;
+      background: #fff;
+      border: 1.5px solid #e5e7eb;
+      border-radius: 8px;
+      padding: 10px 12px;
+      font-size: 20px;
+      font-weight: 700;
+      color: #1a1a4e;
+      letter-spacing: .2em;
+      text-align: center;
+      font-family: 'Inter', sans-serif;
+      outline: none;
+      transition: border-color .2s;
+    }
+    .otp-input:focus { border-color: #6B46C1; }
+    .btn-verify {
+      padding: 0 16px;
+      height: 44px;
+      background: linear-gradient(135deg, #6B46C1 0%, #7C3AED 100%);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .btn-verify:disabled { opacity: .4; cursor: not-allowed; }
+    .countdown { font-size: 11px; color: #9ca3af; margin-top: 6px; text-align: right; }
+
     /* ── Divider ──────────────────────────────────────── */
     .divider {
       border: none;
@@ -269,6 +355,33 @@
     <div id="stepUpload">
       <div class="section-title">Calculá tu disponible</div>
 
+      <!-- Selector de sector -->
+      <div class="field" style="margin-bottom:14px">
+        <label style="font-size:13px;font-weight:600;color:#1a1a4e;display:block;margin-bottom:6px;">¿De qué organismo es tu recibo?</label>
+        <select id="sectorSelect" onchange="onSectorChange()"
+          style="width:100%;padding:10px 12px;border:1.5px solid #e5e7eb;border-radius:10px;font-size:14px;color:#1a1a4e;background:#fff;cursor:pointer;appearance:auto;">
+          <option value="">— Seleccioná tu sector —</option>
+          <option value="policia">Policía / Ministerio de Seguridad Bonaerense</option>
+          <option value="otro">Otro organismo</option>
+        </select>
+      </div>
+
+      <!-- Mensaje WhatsApp para otros sectores -->
+      <div id="panelOtro" style="display:none;background:#f0fdf4;border:1.5px solid #86efac;border-radius:12px;padding:16px 18px;margin-bottom:14px;text-align:center;">
+        <div style="font-size:22px;margin-bottom:6px;">💬</div>
+        <div style="font-size:14px;font-weight:600;color:#166534;margin-bottom:4px;">Otros sectores por WhatsApp</div>
+        <div style="font-size:13px;color:#15803d;margin-bottom:12px;">Para recibos de docentes, municipales, salud y otros organismos, te atendemos personalmente.</div>
+        <a href="https://wa.me/5492216547757?text=Hola%2C%20quiero%20consultar%20mi%20disponible%20de%20cr%C3%A9dito"
+           target="_blank"
+           style="display:inline-flex;align-items:center;gap:7px;background:#25d366;color:#fff;padding:10px 20px;border-radius:50px;font-size:14px;font-weight:600;text-decoration:none;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.103.549 4.122 1.521 5.882L0 24l6.269-1.494A11.955 11.955 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.012-1.376l-.36-.214-3.724.887.916-3.617-.234-.371A9.818 9.818 0 1112 21.818z"/></svg>
+          Consultar por WhatsApp
+        </a>
+      </div>
+
+      <!-- Panel normal (solo Policía) -->
+      <div id="panelPolicia" style="display:none">
+
       <div class="upload-zone" id="uploadZone"
            ondragover="event.preventDefault(); this.classList.add('drag')"
            ondragleave="this.classList.remove('drag')"
@@ -287,9 +400,43 @@
         </div>
       </div>
 
-      <div class="field">
-        <label>Teléfono de contacto</label>
-        <input type="tel" id="telefono" placeholder="Ej. 1154321234" maxlength="20" oninput="checkReady()"/>
+      <!-- Teléfono + verificación OTP -->
+      <div id="telSection">
+        <div class="field" style="margin-bottom:6px">
+          <label>Teléfono de contacto</label>
+        </div>
+        <div class="tel-row">
+          <div class="field">
+            <input type="tel" id="telefono" placeholder="11 5432-1234"
+                   maxlength="15" oninput="onTelInput()" autocomplete="tel"/>
+          </div>
+          <button class="btn-otp" id="btnEnviarOtp" onclick="enviarOtp()" disabled>
+            Enviar código
+          </button>
+        </div>
+        <div style="font-size:11px;color:#9ca3af;margin-bottom:12px">
+          Ingresá tu número sin 0 ni 15 · Ej: 11 5432-1234 o 221 4567-890
+        </div>
+
+        <!-- OTP box (oculto hasta enviar código) -->
+        <div class="otp-box" id="otpBox" style="display:none">
+          <label>Código de verificación</label>
+          <div class="otp-hint" id="otpHint">Ingresá el código que llegó a tu WhatsApp.</div>
+          <div class="otp-row">
+            <input type="tel" class="otp-input" id="otpInput"
+                   placeholder="000000" maxlength="6"
+                   oninput="this.value=this.value.replace(/\D/g,''); onOtpInput()"/>
+            <button class="btn-verify" id="btnVerify" onclick="verificarOtp()" disabled>
+              Verificar
+            </button>
+          </div>
+          <div class="countdown" id="countdown"></div>
+        </div>
+
+        <!-- Badge verificado (oculto hasta verificar) -->
+        <div class="verified-badge" id="verifiedBadge" style="display:none">
+          ✅ Número verificado
+        </div>
       </div>
 
       <div class="alert-error" id="errorUpload"></div>
@@ -297,6 +444,8 @@
       <button class="btn btn-primary" id="btnAnalizar" onclick="analizar()" disabled>
         Calcular disponible
       </button>
+
+      </div><!-- /panelPolicia -->
     </div>
 
     <!-- ── STEP 2: Result ── -->
@@ -359,6 +508,7 @@
 // ═══════════════════════════════════════════
 const API_PROCESAR   = "https://haberia.pages.dev/api/procesar";
 const API_SOLICITUD  = "https://haberia.pages.dev/api/widget-solicitud";
+const API_OTP        = "https://haberia.pages.dev/api/widget-otp";
 
 // ═══════════════════════════════════════════
 // PROMPT HABER-IA (completo)
@@ -397,8 +547,141 @@ const CODIGOS_SIN_DESTINO = ["33008889"];
 const MESES_ES = ["ENERO","FEBRERO","MARZO","ABRIL","MAYO","JUNIO","JULIO","AGOSTO","SEPTIEMBRE","OCTUBRE","NOVIEMBRE","DICIEMBRE"];
 
 // ── State ────────────────────────────────
-let currentFile = null;
-let currentData = null;
+let currentFile     = null;
+
+function onSectorChange() {
+  const val = document.getElementById("sectorSelect").value;
+  document.getElementById("panelPolicia").style.display = val === "policia" ? "block" : "none";
+  document.getElementById("panelOtro").style.display    = val === "otro"    ? "block" : "none";
+  if (val !== "policia") {
+    currentFile = null;
+    telefonoVerif = null;
+    document.getElementById("btnAnalizar").disabled = true;
+  }
+}
+let currentData     = null;
+let telefonoVerif   = null;   // número verificado
+let countdownTimer  = null;
+
+// ── Normalizar teléfono ───────────────────
+function normalizarTel(raw) {
+  const digits = raw.replace(/\D/g, "");
+  if (digits.length === 10) return digits;           // 1154321234
+  if (digits.length === 11 && digits[0]==="0") return digits.slice(1); // 01154321234
+  if (digits.startsWith("549") && digits.length===13) return digits.slice(3); // 5491154321234
+  if (digits.startsWith("54") && digits.length===12)  return digits.slice(2); // 541154321234
+  return null;
+}
+
+function telValido(raw) { return normalizarTel(raw) !== null; }
+
+// ── Máscara automática ───────────────────
+function onTelInput() {
+  const inp = document.getElementById("telefono");
+  // Solo números, espacios y guiones
+  inp.value = inp.value.replace(/[^\d\s\-]/g, "");
+  const ok = telValido(inp.value);
+  document.getElementById("btnEnviarOtp").disabled = !ok;
+  // Si cambia el número, reseteamos verificación
+  if (telefonoVerif) {
+    telefonoVerif = null;
+    document.getElementById("verifiedBadge").style.display = "none";
+    document.getElementById("otpBox").style.display = "none";
+    checkReady();
+  }
+}
+
+function onOtpInput() {
+  const code = document.getElementById("otpInput").value;
+  document.getElementById("btnVerify").disabled = code.length !== 6;
+}
+
+// ── Enviar OTP ───────────────────────────
+async function enviarOtp() {
+  const tel = document.getElementById("telefono").value;
+  if (!telValido(tel)) return;
+
+  const btn = document.getElementById("btnEnviarOtp");
+  btn.disabled = true;
+  btn.textContent = "Enviando…";
+  document.getElementById("errorUpload").style.display = "none";
+
+  try {
+    const resp = await fetch(API_OTP, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "enviar", telefono: tel })
+    });
+    const data = await resp.json();
+    if (!data.ok) throw new Error(data.error || "No se pudo enviar");
+
+    // Mostrar box de código
+    document.getElementById("otpBox").style.display = "block";
+    document.getElementById("otpInput").value = "";
+    document.getElementById("btnVerify").disabled = true;
+    document.getElementById("otpHint").textContent = "Código enviado a tu WhatsApp. Válido 5 minutos.";
+
+    // Countdown 60s para reenviar
+    startCountdown(60, btn);
+
+  } catch(e) {
+    showError("errorUpload", e.message);
+    btn.disabled = false;
+    btn.textContent = "Enviar código";
+  }
+}
+
+function startCountdown(seconds, btn) {
+  if (countdownTimer) clearInterval(countdownTimer);
+  const cdEl = document.getElementById("countdown");
+  let remaining = seconds;
+  btn.textContent = `Reenviar (${remaining}s)`;
+  countdownTimer = setInterval(() => {
+    remaining--;
+    if (remaining <= 0) {
+      clearInterval(countdownTimer);
+      btn.disabled = false;
+      btn.textContent = "Reenviar código";
+      cdEl.textContent = "";
+    } else {
+      btn.textContent = `Reenviar (${remaining}s)`;
+    }
+  }, 1000);
+}
+
+// ── Verificar OTP ────────────────────────
+async function verificarOtp() {
+  const tel    = document.getElementById("telefono").value;
+  const codigo = document.getElementById("otpInput").value;
+  const btn    = document.getElementById("btnVerify");
+  btn.disabled = true;
+  btn.textContent = "…";
+  document.getElementById("errorUpload").style.display = "none";
+
+  try {
+    const resp = await fetch(API_OTP, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "verificar", telefono: tel, codigo })
+    });
+    const data = await resp.json();
+    if (!data.ok) throw new Error(data.error || "Código incorrecto");
+
+    // ¡Verificado!
+    telefonoVerif = tel;
+    if (countdownTimer) clearInterval(countdownTimer);
+    document.getElementById("otpBox").style.display     = "none";
+    document.getElementById("verifiedBadge").style.display = "inline-flex";
+    document.getElementById("btnEnviarOtp").style.display  = "none";
+    document.getElementById("countdown").textContent        = "";
+    checkReady();
+
+  } catch(e) {
+    showError("errorUpload", e.message);
+    btn.disabled = false;
+    btn.textContent = "Verificar";
+  }
+}
 
 // ── Helpers ──────────────────────────────
 function fmt(n) {
@@ -424,6 +707,11 @@ function calcularSalud(d) {
   return { disponible, sin_destino: false };
 }
 
+// ── Check ready (file + teléfono verificado) ──
+function checkReady() {
+  document.getElementById("btnAnalizar").disabled = !(currentFile && telefonoVerif);
+}
+
 // ── File handling ─────────────────────────
 function handleDrop(e) {
   e.preventDefault();
@@ -443,11 +731,6 @@ function handleFile(f) {
   document.getElementById("uploadName").textContent = f.name;
   document.getElementById("errorUpload").style.display = "none";
   checkReady();
-}
-
-function checkReady() {
-  const tel = document.getElementById("telefono").value.trim();
-  document.getElementById("btnAnalizar").disabled = !(currentFile && tel.length >= 6);
 }
 
 // ── Analizar ──────────────────────────────
@@ -572,18 +855,26 @@ function showError(id, msg) {
   el.style.display = "block";
 }
 function resetForm() {
-  currentFile = null; currentData = null;
-  document.getElementById("fileInput").value = "";
+  currentFile = null; currentData = null; telefonoVerif = null;
+  if (countdownTimer) clearInterval(countdownTimer);
+  document.getElementById("fileInput").value        = "";
   document.getElementById("uploadPrompt").style.display = "block";
   document.getElementById("uploadReady").style.display  = "none";
-  document.getElementById("telefono").value = "";
-  document.getElementById("telefonoConfirm").value = "";
-  document.getElementById("errorUpload").style.display = "none";
-  document.getElementById("errorSubmit").style.display = "none";
-  document.getElementById("btnAnalizar").disabled = true;
-  document.getElementById("stepResult").style.display  = "none";
-  document.getElementById("stepSuccess").style.display = "none";
-  document.getElementById("stepUpload").style.display  = "block";
+  document.getElementById("telefono").value         = "";
+  document.getElementById("telefonoConfirm").value  = "";
+  document.getElementById("otpBox").style.display        = "none";
+  document.getElementById("otpInput").value          = "";
+  document.getElementById("verifiedBadge").style.display = "none";
+  document.getElementById("btnEnviarOtp").style.display  = "inline-flex";
+  document.getElementById("btnEnviarOtp").disabled       = true;
+  document.getElementById("btnEnviarOtp").textContent    = "Enviar código";
+  document.getElementById("countdown").textContent        = "";
+  document.getElementById("errorUpload").style.display  = "none";
+  document.getElementById("errorSubmit").style.display  = "none";
+  document.getElementById("btnAnalizar").disabled       = true;
+  document.getElementById("stepResult").style.display   = "none";
+  document.getElementById("stepSuccess").style.display  = "none";
+  document.getElementById("stepUpload").style.display   = "block";
 }
 </script>
 </body>
