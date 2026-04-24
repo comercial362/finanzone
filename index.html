@@ -99,10 +99,56 @@ nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.94);backdrop-
 .step-title{font-family:'DM Serif Display',serif;font-size:1.1rem;color:var(--text);margin-bottom:10px;}
 .step-desc{font-size:13.5px;line-height:1.65;max-width:260px;margin:0 auto;}
 
+/* ── CALCULADORA ──────────────────────────────────────────────────── */
+#calculadora{background:var(--white);padding:80px 0;}
+.calc-inner{display:grid;grid-template-columns:1fr 1fr;gap:72px;align-items:center;}
+.calc-left{}
+.calc-badge{
+  display:inline-flex;align-items:center;gap:8px;
+  background:var(--navy);border-radius:50px;padding:6px 16px;
+  font-size:10px;font-weight:600;letter-spacing:.1em;color:rgba(255,255,255,.75);
+  text-transform:uppercase;margin-bottom:18px;
+}
+.calc-badge .dot{color:#c9a84c;font-size:13px;}
+.calc-h{margin-bottom:14px;}
+.calc-p{font-size:15.5px;margin-bottom:28px;}
+.calc-features{display:flex;flex-direction:column;gap:12px;margin-bottom:32px;}
+.calc-feat{display:flex;align-items:flex-start;gap:12px;}
+.calc-feat-icon{
+  width:36px;height:36px;border-radius:10px;flex-shrink:0;
+  background:linear-gradient(135deg,rgba(109,40,217,.10),rgba(56,189,248,.10));
+  display:flex;align-items:center;justify-content:center;font-size:16px;
+}
+.calc-feat-text{}
+.calc-feat-title{font-size:13.5px;font-weight:600;color:var(--text);margin-bottom:2px;}
+.calc-feat-desc{font-size:12.5px;color:var(--muted);line-height:1.5;}
+
+.calc-right{}
+.calc-frame-wrap{
+  border-radius:24px;
+  overflow:hidden;
+  box-shadow:0 16px 56px rgba(109,40,217,.18);
+  border:1px solid var(--border);
+}
+.calc-frame-wrap iframe{
+  display:block;
+  width:100%;
+  height:680px;
+  border:none;
+}
+
+@media(max-width:860px){
+  .calc-inner{grid-template-columns:1fr;}
+  .calc-left{text-align:center;}
+  .calc-features{align-items:flex-start;text-align:left;}
+  .calc-frame-wrap iframe{height:640px;}
+}
+/* ────────────────────────────────────────────────────────────────── */
+
 /* SECTORES */
-#sectores{background:var(--white);}
+#sectores{background:var(--light);}
 .sectores-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:48px;}
-.sec-card{background:var(--light);border:1px solid var(--border);border-radius:14px;padding:20px 18px;display:flex;align-items:flex-start;gap:13px;transition:border-color .2s,box-shadow .2s;}
+.sec-card{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:20px 18px;display:flex;align-items:flex-start;gap:13px;transition:border-color .2s,box-shadow .2s;}
 .sec-card:hover{border-color:rgba(109,40,217,.28);box-shadow:var(--sh);}
 .sec-ico{width:40px;height:40px;border-radius:11px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:18px;background:linear-gradient(135deg,rgba(109,40,217,.09),rgba(56,189,248,.09));}
 .sec-name{font-weight:600;font-size:13.5px;color:var(--text);margin-bottom:3px;}
@@ -178,7 +224,6 @@ footer{background:#0d0c1a;padding:26px 24px;display:flex;align-items:center;just
             <stop offset="100%" style="stop-color:#2563eb"/>
           </linearGradient>
         </defs>
-        <!-- Diamante: centro (36,38) -->
         <polygon points="36,8 62,38 36,38" fill="url(#nl-gf)"/>
         <polygon points="36,8 10,38 36,38" fill="url(#nl-gf)"/>
         <polygon points="36,38 62,38 36,68" fill="url(#nl-gf)" opacity="0.6"/>
@@ -189,7 +234,6 @@ footer{background:#0d0c1a;padding:26px 24px;display:flex;align-items:center;just
         <line x1="62" y1="38" x2="23" y2="22" stroke="url(#nl-g)" stroke-width="1.6" stroke-linecap="round"/>
         <line x1="10" y1="38" x2="49" y2="54" stroke="url(#nl-g)" stroke-width="1.6" stroke-linecap="round"/>
         <line x1="62" y1="38" x2="23" y2="54" stroke="url(#nl-g)" stroke-width="1.6" stroke-linecap="round"/>
-        <!-- Texto unido -->
         <text x="78" y="47" font-family="'Helvetica Neue',Helvetica,Arial,sans-serif" font-size="30" letter-spacing="-1">
           <tspan font-weight="300" fill="#1a1a2e">Finan</tspan><tspan font-weight="800" fill="url(#nl-gt)">Zone</tspan>
         </text>
@@ -200,6 +244,7 @@ footer{background:#0d0c1a;padding:26px 24px;display:flex;align-items:center;just
     <div class="nav-links">
       <a href="#servicios">Servicios</a>
       <a href="#pasos">¿Cómo funciona?</a>
+      <a href="#calculadora">Calculá tu disponible</a>
       <a href="#sectores">Sectores</a>
       <a href="https://wa.me/5492216547757?text=Hola%20FinanZone!%20quiero%20m%C3%A1s%20informaci%C3%B3n%20sobre%20los%20cr%C3%A9ditos%20%F0%9F%98%8A" class="nav-cta" target="_blank" rel="noopener">💬 WhatsApp</a>
     </div>
@@ -216,7 +261,7 @@ footer{background:#0d0c1a;padding:26px 24px;display:flex;align-items:center;just
         <h1 class="hero-h1">Encontramos<br/><em class="grad-text">tu crédito ideal.</em></h1>
         <p class="hero-sub">Gestionamos préstamos personales para empleados del Estado. Trabajamos con más de 10 mutuales y cooperativas para conseguirte la mejor opción.</p>
         <div class="hero-btns">
-          <a href="#contacto" class="btn-main">📋 Solicitar consulta</a>
+          <a href="#calculadora" class="btn-main">🧮 Calculá tu disponible</a>
           <a href="https://wa.me/5492216547757?text=Hola%20FinanZone!%20quiero%20m%C3%A1s%20informaci%C3%B3n%20sobre%20los%20cr%C3%A9ditos%20%F0%9F%98%8A" class="btn-ghost" target="_blank" rel="noopener">💬 WhatsApp directo</a>
         </div>
       </div>
@@ -293,19 +338,71 @@ footer{background:#0d0c1a;padding:26px 24px;display:flex;align-items:center;just
     <div class="steps-grid">
       <div class="step reveal">
         <div class="step-num">1</div>
-        <div class="step-title">Explorá nuestros servicios</div>
-        <p class="step-desc">Descubrí los tipos de créditos disponibles y encontrá la opción que se adapta a tus necesidades.</p>
+        <div class="step-title">Calculá tu disponible</div>
+        <p class="step-desc">Subí tu recibo de sueldo y en segundos sabés exactamente cuánto podés dedicar a un nuevo crédito.</p>
       </div>
       <div class="step reveal">
         <div class="step-num">2</div>
-        <div class="step-title">Completá el formulario</div>
-        <p class="step-desc">Completá el formulario de contacto para que podamos entender mejor tu caso y asesorarte correctamente.</p>
+        <div class="step-title">Enviá tu solicitud</div>
+        <p class="step-desc">Con un clic enviás tu recibo y teléfono. Un operador lo recibe al instante.</p>
       </div>
       <div class="step reveal">
         <div class="step-num">3</div>
         <div class="step-title">Contacto directo</div>
         <p class="step-desc">Un operador te contacta por WhatsApp para darte respuesta inmediata y gestionar tu crédito sin vueltas.</p>
       </div>
+    </div>
+  </div>
+</section>
+
+<!-- CALCULADORA -->
+<section id="calculadora">
+  <div class="container">
+    <div class="calc-inner">
+
+      <!-- Izquierda: copy -->
+      <div class="calc-left reveal">
+        <div class="calc-badge">
+          <span class="dot">✦</span> Tecnología HABER-IA
+        </div>
+        <h2 class="calc-h">Calculá tu disponible<br/><em class="grad-text">en segundos.</em></h2>
+        <p class="calc-p">Subí tu recibo de sueldo — nuestra IA lo analiza y te dice exactamente cuánto podés dedicar a un nuevo crédito. Gratis, sin compromiso.</p>
+        <div class="calc-features">
+          <div class="calc-feat">
+            <div class="calc-feat-icon">📄</div>
+            <div class="calc-feat-text">
+              <div class="calc-feat-title">PDF o foto del recibo</div>
+              <div class="calc-feat-desc">Aceptamos cualquier formato. Seguridad PBA y Salud PBA.</div>
+            </div>
+          </div>
+          <div class="calc-feat">
+            <div class="calc-feat-icon">⚡</div>
+            <div class="calc-feat-text">
+              <div class="calc-feat-title">Resultado instantáneo</div>
+              <div class="calc-feat-desc">La IA procesa el recibo y calcula el disponible en segundos.</div>
+            </div>
+          </div>
+          <div class="calc-feat">
+            <div class="calc-feat-icon">🔒</div>
+            <div class="calc-feat-text">
+              <div class="calc-feat-title">Tus datos están protegidos</div>
+              <div class="calc-feat-desc">Solo lo ve el equipo de FinanZone. No compartimos con terceros.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Derecha: iframe widget -->
+      <div class="calc-right reveal">
+        <div class="calc-frame-wrap">
+          <iframe
+            src="widget-policia.html"
+            title="Calculadora de disponible FinanZone"
+            loading="lazy">
+          </iframe>
+        </div>
+      </div>
+
     </div>
   </div>
 </section>
@@ -334,7 +431,6 @@ footer{background:#0d0c1a;padding:26px 24px;display:flex;align-items:center;just
   <div class="contact-blob"></div>
   <div class="container">
     <div class="contact-grid">
-      <!-- Info izquierda -->
       <div>
         <span class="section-label" style="color:rgba(255,255,255,.4);">→ Contacto</span>
         <h2 class="contact-h">Contactate con<br/>un operador</h2>
@@ -354,8 +450,6 @@ footer{background:#0d0c1a;padding:26px 24px;display:flex;align-items:center;just
           </div>
         </div>
       </div>
-
-      <!-- Formulario derecha -->
       <div class="form-box reveal">
         <div class="form-title">Solicitud de contacto</div>
         <p class="form-sub">Completá el formulario y te respondemos por WhatsApp.</p>
@@ -413,7 +507,6 @@ function enviarWA() {
   window.open('https://wa.me/5492216547757?text=' + encodeURIComponent(texto), '_blank');
 }
 
-// Scroll reveal
 const obs = new IntersectionObserver(entries => {
   entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
 }, { threshold: 0.08 });
