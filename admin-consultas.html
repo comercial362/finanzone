@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Panel Admin — FinanZone</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --navy:   #1a2340;
+    --purple: #6c3fc5;
+    --gold:   #c9a84c;
+    --white:  #ffffff;
+    --bg:     #f4f5f8;
+    --surface:#ffffff;
+    --border: #e2e4ea;
+    --text:   #1a2340;
+    --muted:  #6b7280;
+    --radius: 10px;
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 14px;
+    min-height: 100vh;
+  }
+
+  /* ── LOGIN ── */
+  #login-screen {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background: var(--navy);
+  }
+  .login-card {
+    background: var(--white);
+    border-radius: 16px;
+    padding: 40px 36px;
+    width: 100%;
+    max-width: 360px;
+    text-align: center;
+  }
+  .login-logo {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--navy);
+    letter-spacing: -0.5px;
+    margin-bottom: 4px;
+  }
+  .login-logo span { color: var(--purple); }
+  .login-sub {
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 28px;
+  }
+  .login-card input {
+    width: 100%;
+    padding: 11px 14px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    font-size: 14px;
+    margin-bottom: 12px;
+    color: var(--text);
+    background: #fafafa;
+  }
+  .login-card input:focus { outline: 2px solid var(--purple); border-color: transparent; }
+  .login-btn {
+    width: 100%;
+    padding: 12px;
+    background: var(--purple);
+    color: #fff;
+    font-size: 14px;
+    font-weight: 600;
+    border: none;
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: opacity .15s;
+  }
+  .login-btn:hover { opacity: .88; }
+  .login-error {
+    font-size: 12px;
+    color: #dc2626;
+    margin-top: 10px;
+    display: none;
+  }
+
+  /* ── LAYOUT ── */
+  #app { display: none; }
+
+  header {
+    background: var(--navy);
+    color: #fff;
+    padding: 0 28px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .header-logo {
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: -.4px;
+  }
+  .header-logo span { color: var(--gold); }
+  .header-badge {
+    font-size: 11px;
+    background: rgba(201,168,76,.15);
+    color: var(--gold);
+    border: 1px solid rgba(201,168,76,.35);
+    border-radius: 99px;
+    padding: 3px 10px;
+    font-weight: 500;
+  }
+  .header-right { display: flex; align-items: center; gap: 12px; }
+  .logout-btn {
+    font-size: 12px;
+    color: rgba(255,255,255,.55);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px 8px;
+  }
+  .logout-btn:hover { color: #fff; }
+
+  main { max-width: 1100px; margin: 0 auto; padding: 28px 20px; }
+
+  /* ── KPIs ── */
+  .kpis {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+    margin-bottom: 24px;
+  }
+  @media(max-width:700px){ .kpis { grid-template-columns: repeat(2,1fr); } }
+  .kpi {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 18px 20px;
+  }
+  .kpi-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; margin-bottom: 8px; }
+  .kpi-val { font-size: 26px; font-weight: 700; color: var(--navy); line-height: 1; }
+  .kpi-sub { font-size: 11px; color: var(--muted); margin-top: 5px; }
+  .kpi-accent .kpi-val { color: var(--purple); }
+
+  /* ── TABLE CARD ── */
+  .table-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+  .table-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border);
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .toolbar-title { font-size: 15px; font-weight: 600; color: var(--navy); }
+  .toolbar-right { display: flex; gap: 8px; flex-wrap: wrap; }
+  .toolbar-right input,
+  .toolbar-right select {
+    font-size: 13px;
+    padding: 7px 11px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    background: #fafafa;
+  }
+  .toolbar-right input:focus,
+  .toolbar-right select:focus { outline: 2px solid var(--purple); }
+  .csv-btn {
+    font-size: 13px;
+    padding: 7px 14px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--white);
+    color: var(--navy);
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    transition: background .12s;
+  }
+  .csv-btn:hover { background: var(--bg); }
+
+  .table-wrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; min-width: 700px; }
+  thead th {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    padding: 10px 16px;
+    text-align: left;
+    background: #f8f9fb;
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+  }
+  tbody tr { border-bottom: 1px solid var(--border); transition: background .1s; }
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: #f8f9fb; }
+  td {
+    padding: 11px 16px;
+    font-size: 13px;
+    color: var(--text);
+    vertical-align: middle;
+  }
+  .td-muted { color: var(--muted); }
+  .td-monto { font-weight: 700; color: var(--purple); }
+
+  .tag {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 9px;
+    border-radius: 99px;
+    white-space: nowrap;
+  }
+  .tag-policia  { background: #e1f5ee; color: #085041; }
+  .tag-salud    { background: #e6f1fb; color: #0c447c; }
+  .tag-docente  { background: #faeeda; color: #633806; }
+  .tag-otro     { background: #f1f0f8; color: #3c3489; }
+
+  .pdf-link {
+    font-size: 12px;
+    color: var(--purple);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 0;
+    font-family: inherit;
+  }
+  .pdf-link:hover { opacity: .7; }
+
+  /* ── EMPTY / LOADING / ERROR ── */
+  .state-row td {
+    text-align: center;
+    padding: 48px 16px;
+    color: var(--muted);
+  }
+  .spinner {
+    display: inline-block;
+    width: 20px; height: 20px;
+    border: 2px solid var(--border);
+    border-top-color: var(--purple);
+    border-radius: 50%;
+    animation: spin .7s linear infinite;
+    margin-right: 8px;
+    vertical-align: middle;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .last-update {
+    font-size: 11px;
+    color: var(--muted);
+    text-align: right;
+    margin-top: 10px;
+  }
+
+  /* ── PAGINACIÓN ── */
+  .pagination {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 20px;
+    border-top: 1px solid var(--border);
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .page-btns { display: flex; gap: 6px; }
+  .page-btn {
+    padding: 5px 10px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: #fff;
+    font-size: 12px;
+    cursor: pointer;
+    color: var(--navy);
+  }
+  .page-btn:disabled { opacity: .35; cursor: default; }
+  .page-btn.active { background: var(--purple); color: #fff; border-color: var(--purple); }
+</style>
+</head>
+<body>
+
+<!-- ══ LOGIN ══════════════════════════════════════════════════════════════ -->
+<div id="login-screen">
+  <div class="login-card">
+    <div class="login-logo">Finan<span>Zone</span></div>
+    <div class="login-sub">Panel de consultas — Tecnología HABER-IA</div>
+    <input type="password" id="pwd-input" placeholder="Contraseña" autocomplete="current-password" />
+    <button class="login-btn" onclick="tryLogin()">Ingresar</button>
+    <div class="login-error" id="login-error">Contraseña incorrecta.</div>
+  </div>
+</div>
+
+<!-- ══ APP ══════════════════════════════════════════════════════════════ -->
+<div id="app">
+  <header>
+    <div class="header-logo">Finan<span>Zone</span></div>
+    <div class="header-right">
+      <span class="header-badge">✦ Tecnología HABER-IA</span>
+      <button class="logout-btn" onclick="logout()">Salir</button>
+    </div>
+  </header>
+
+  <main>
+    <!-- KPIs -->
+    <div class="kpis">
+      <div class="kpi">
+        <div class="kpi-label">Total consultas</div>
+        <div class="kpi-val" id="kpi-total">—</div>
+        <div class="kpi-sub">histórico</div>
+      </div>
+      <div class="kpi kpi-accent">
+        <div class="kpi-label">Disponible promedio</div>
+        <div class="kpi-val" id="kpi-avg">—</div>
+        <div class="kpi-sub">recibos procesados</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">Este mes</div>
+        <div class="kpi-val" id="kpi-mes">—</div>
+        <div class="kpi-sub" id="kpi-mes-label">consultas</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">Hoy</div>
+        <div class="kpi-val" id="kpi-hoy">—</div>
+        <div class="kpi-sub">consultas nuevas</div>
+      </div>
+    </div>
+
+    <!-- Tabla -->
+    <div class="table-card">
+      <div class="table-toolbar">
+        <span class="toolbar-title">Consultas recibidas</span>
+        <div class="toolbar-right">
+          <input type="text" id="search" placeholder="Buscar nombre o teléfono…" oninput="renderTabla()" style="width:200px;" />
+          <select id="filtro-sector" onchange="renderTabla()">
+            <option value="">Todos los sectores</option>
+            <option value="policia">Policía</option>
+            <option value="salud">Salud</option>
+            <option value="docente">Docente</option>
+            <option value="otro">Otro</option>
+          </select>
+          <button class="csv-btn" onclick="exportarCSV()">
+            <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M8 1v9M4 6l4 4 4-4M2 11v2a1 1 0 001 1h10a1 1 0 001-1v-2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Exportar CSV
+          </button>
+          <button class="csv-btn" onclick="cargarDatos()">
+            <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M14 8A6 6 0 112 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M14 4v4h-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Actualizar
+          </button>
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Nombre</th>
+              <th>Teléfono</th>
+              <th>Sector</th>
+              <th>Disponible</th>
+              <th>Mes recibo</th>
+              <th>Fecha consulta</th>
+              <th>Recibo</th>
+            </tr>
+          </thead>
+          <tbody id="tabla-body">
+            <tr class="state-row">
+              <td colspan="7"><span class="spinner"></span> Cargando consultas…</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="pagination" id="pagination" style="display:none;">
+        <span id="pag-info"></span>
+        <div class="page-btns" id="pag-btns"></div>
+      </div>
+    </div>
+
+    <div class="last-update" id="last-update"></div>
+  </main>
+</div>
+
+<script>
+// ── CONFIG ────────────────────────────────────────────────────────────────
+const API_SOLICITUD = "https://haberia.pages.dev/api/widget-solicitud";
+const PASS_HASH     = "finanzone2025";   // ← cambiá esto por la contraseña que quieras
+const PER_PAGE      = 20;
+
+// ── STATE ─────────────────────────────────────────────────────────────────
+let allData   = [];
+let filtered  = [];
+let page      = 0;
+
+// ── LOGIN ─────────────────────────────────────────────────────────────────
+function tryLogin() {
+  const val = document.getElementById("pwd-input").value.trim();
+  if (val === PASS_HASH) {
+    document.getElementById("login-screen").style.display = "none";
+    document.getElementById("app").style.display = "block";
+    cargarDatos();
+  } else {
+    document.getElementById("login-error").style.display = "block";
+  }
+}
+document.getElementById("pwd-input").addEventListener("keydown", e => {
+  if (e.key === "Enter") tryLogin();
+});
+
+function logout() {
+  document.getElementById("login-screen").style.display = "flex";
+  document.getElementById("app").style.display = "none";
+  document.getElementById("pwd-input").value = "";
+  document.getElementById("login-error").style.display = "none";
+  allData = []; filtered = []; page = 0;
+}
+
+// ── FETCH DATA ────────────────────────────────────────────────────────────
+async function cargarDatos() {
+  setLoading(true);
+  try {
+    const r = await fetch(API_SOLICITUD, { method: "GET" });
+    if (!r.ok) throw new Error("HTTP " + r.status);
+    const json = await r.json();
+    allData = Array.isArray(json) ? json : (json.consultas || []);
+    actualizarKPIs();
+    page = 0;
+    renderTabla();
+    document.getElementById("last-update").textContent =
+      "Última actualización: " + new Date().toLocaleTimeString("es-AR");
+  } catch (e) {
+    setError("No se pudo cargar la lista. Verificá que la API esté disponible.");
+  }
+}
+
+function setLoading(v) {
+  if (v) {
+    document.getElementById("tabla-body").innerHTML =
+      '<tr class="state-row"><td colspan="7"><span class="spinner"></span> Cargando consultas…</td></tr>';
+    document.getElementById("pagination").style.display = "none";
+  }
+}
+
+function setError(msg) {
+  document.getElementById("tabla-body").innerHTML =
+    `<tr class="state-row"><td colspan="7" style="color:#dc2626;">⚠ ${msg}</td></tr>`;
+  document.getElementById("pagination").style.display = "none";
+}
+
+// ── KPIs ──────────────────────────────────────────────────────────────────
+function actualizarKPIs() {
+  document.getElementById("kpi-total").textContent = allData.length;
+
+  const conMonto = allData.filter(d => d.disponible && !isNaN(parseFloat(d.disponible)));
+  if (conMonto.length) {
+    const avg = conMonto.reduce((s, d) => s + parseFloat(d.disponible), 0) / conMonto.length;
+    document.getElementById("kpi-avg").textContent = "$" + Math.round(avg).toLocaleString("es-AR");
+  } else {
+    document.getElementById("kpi-avg").textContent = "—";
+  }
+
+  const ahora   = new Date();
+  const mesActual = `${ahora.getFullYear()}-${String(ahora.getMonth()+1).padStart(2,"0")}`;
+  const hoyStr  = ahora.toISOString().slice(0,10);
+
+  const delMes = allData.filter(d => d.fecha && d.fecha.startsWith(mesActual));
+  const deHoy  = allData.filter(d => d.fecha && d.fecha.startsWith(hoyStr));
+
+  document.getElementById("kpi-mes").textContent = delMes.length;
+  document.getElementById("kpi-hoy").textContent = deHoy.length;
+
+  const meses = ["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
+  document.getElementById("kpi-mes-label").textContent = meses[ahora.getMonth()];
+}
+
+// ── TABLA ─────────────────────────────────────────────────────────────────
+function renderTabla() {
+  const buscar  = document.getElementById("search").value.toLowerCase();
+  const sector  = document.getElementById("filtro-sector").value.toLowerCase();
+
+  filtered = allData.filter(d => {
+    const nombre = (d.nombre || "").toLowerCase();
+    const tel    = (d.telefono || "").toLowerCase();
+    const sec    = (d.tipo_recibo || d.sector || "").toLowerCase();
+    const matchQ = !buscar || nombre.includes(buscar) || tel.includes(buscar);
+    const matchS = !sector || sec.includes(sector);
+    return matchQ && matchS;
+  });
+
+  const total = filtered.length;
+  const pages = Math.ceil(total / PER_PAGE) || 1;
+  if (page >= pages) page = pages - 1;
+
+  const slice = filtered.slice(page * PER_PAGE, (page + 1) * PER_PAGE);
+
+  const tbody = document.getElementById("tabla-body");
+  if (!slice.length) {
+    tbody.innerHTML = '<tr class="state-row"><td colspan="7">No hay consultas que coincidan con los filtros.</td></tr>';
+    document.getElementById("pagination").style.display = "none";
+    return;
+  }
+
+  tbody.innerHTML = slice.map(d => {
+    const nombre   = escHtml(d.nombre || "—");
+    const tel      = escHtml(formatTel(d.telefono || ""));
+    const sector   = tagSector(d.tipo_recibo || d.sector || "");
+    const monto    = d.disponible ? "$" + parseFloat(d.disponible).toLocaleString("es-AR", {maximumFractionDigits:0}) : "—";
+    const mesRec   = escHtml(d.mes_anio || "—");
+    const fecha    = formatFecha(d.fecha);
+    const pdfBtn   = d.recibo_url
+      ? `<button class="pdf-link" onclick="window.open('${escHtml(d.recibo_url)}','_blank')">Ver PDF</button>`
+      : '<span style="color:var(--muted)">—</span>';
+
+    return `<tr>
+      <td>${nombre}</td>
+      <td class="td-muted">${tel}</td>
+      <td>${sector}</td>
+      <td class="td-monto">${monto}</td>
+      <td class="td-muted">${mesRec}</td>
+      <td class="td-muted">${fecha}</td>
+      <td>${pdfBtn}</td>
+    </tr>`;
+  }).join("");
+
+  // paginación
+  const pag = document.getElementById("pagination");
+  if (pages <= 1) {
+    pag.style.display = "none";
+  } else {
+    pag.style.display = "flex";
+    document.getElementById("pag-info").textContent =
+      `Mostrando ${page*PER_PAGE+1}–${Math.min((page+1)*PER_PAGE, total)} de ${total}`;
+
+    const btns = document.getElementById("pag-btns");
+    btns.innerHTML = `
+      <button class="page-btn" onclick="goPage(${page-1})" ${page===0?"disabled":""}>← Ant</button>
+      ${Array.from({length:Math.min(pages,5)}, (_,i) => {
+        const p = Math.max(0, Math.min(pages-5, page-2)) + i;
+        return `<button class="page-btn ${p===page?"active":""}" onclick="goPage(${p})">${p+1}</button>`;
+      }).join("")}
+      <button class="page-btn" onclick="goPage(${page+1})" ${page===pages-1?"disabled":""}>Sig →</button>`;
+  }
+}
+
+function goPage(p) { page = p; renderTabla(); }
+
+// ── HELPERS ───────────────────────────────────────────────────────────────
+function escHtml(s) {
+  return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+}
+
+function formatTel(t) {
+  const d = t.replace(/\D/g,"");
+  if (d.length === 10) return d.slice(0,2) + " " + d.slice(2,6) + "-" + d.slice(6);
+  if (d.length === 13 && d.startsWith("549")) {
+    const loc = d.slice(3);
+    return "+" + d.slice(0,3) + " " + loc.slice(0,2) + " " + loc.slice(2,6) + "-" + loc.slice(6);
+  }
+  return t;
+}
+
+function formatFecha(s) {
+  if (!s) return "—";
+  const d = new Date(s);
+  if (isNaN(d)) return s;
+  const hoy = new Date();
+  const dif = Math.floor((hoy - d) / 86400000);
+  if (dif === 0) return "hoy " + d.toLocaleTimeString("es-AR",{hour:"2-digit",minute:"2-digit"});
+  if (dif === 1) return "ayer " + d.toLocaleTimeString("es-AR",{hour:"2-digit",minute:"2-digit"});
+  return d.toLocaleDateString("es-AR",{day:"2-digit",month:"2-digit"}) +
+         " " + d.toLocaleTimeString("es-AR",{hour:"2-digit",minute:"2-digit"});
+}
+
+function tagSector(s) {
+  const m = s.toLowerCase();
+  if (m.includes("polic")) return '<span class="tag tag-policia">Policía</span>';
+  if (m.includes("salud") || m.includes("médic") || m.includes("medic")) return '<span class="tag tag-salud">Salud</span>';
+  if (m.includes("docent") || m.includes("maest") || m.includes("prof")) return '<span class="tag tag-docente">Docente</span>';
+  return `<span class="tag tag-otro">${escHtml(s) || "Otro"}</span>`;
+}
+
+// ── EXPORT CSV ────────────────────────────────────────────────────────────
+function exportarCSV() {
+  const cols = ["Nombre","Teléfono","Sector","Disponible","Mes recibo","Fecha","CUIL","Legajo"];
+  const rows = filtered.map(d => [
+    d.nombre || "",
+    d.telefono || "",
+    d.tipo_recibo || d.sector || "",
+    d.disponible || "",
+    d.mes_anio || "",
+    d.fecha || "",
+    d.cuil || "",
+    d.legajo || ""
+  ].map(v => `"${String(v).replace(/"/g,'""')}"`).join(","));
+
+  const csv = "\uFEFF" + [cols.join(","), ...rows].join("\n");
+  const a   = document.createElement("a");
+  a.href    = URL.createObjectURL(new Blob([csv], {type:"text/csv;charset=utf-8;"}));
+  a.download = `consultas_finanzone_${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();
+}
+</script>
+</body>
+</html>
