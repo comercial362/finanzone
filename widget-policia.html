@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>FinanZone · Calculá tu disponible</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@1,700&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #f5f4ff;
+      font-family: 'Inter', sans-serif;
+      color: #1a1a4e;
+      min-height: 100vh;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 28px 16px 48px;
+    }
+
+    .wrap { width: 100%; max-width: 460px; }
+
+    /* ── Logo ─────────────────────────────────────────── */
+    .logo {
+      text-align: center;
+      margin-bottom: 22px;
+    }
+    .logo-name {
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+    .logo-name .w  { color: #1a1a4e; }
+    .logo-name .z  { color: #6B46C1; }
+    .logo-sub {
+      font-size: 10px;
+      color: #9ca3af;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+    /* Badge HABER-IA */
+    .haberia-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 10px;
+      background: #1a1a4e;
+      border-radius: 20px;
+      padding: 5px 12px;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: .08em;
+      color: #e8e0d0;
+    }
+    .haberia-badge .dot {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      color: #c9a84c;
+      font-size: 12px;
+    }
+
+    /* ── Card ─────────────────────────────────────────── */
+    .card {
+      background: #ffffff;
+      border-radius: 20px;
+      padding: 28px 24px;
+      box-shadow: 0 4px 32px rgba(107,70,193,.10), 0 1px 4px rgba(0,0,0,.04);
+    }
+
+    .section-title {
+      font-size: 11px;
+      font-weight: 600;
+      color: #6B46C1;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+
+    /* ── Upload zone ──────────────────────────────────── */
+    .upload-zone {
+      border: 2px dashed #d8d0f5;
+      border-radius: 14px;
+      padding: 28px 20px;
+      text-align: center;
+      cursor: pointer;
+      background: #faf9ff;
+      transition: border-color .2s, background .2s;
+      margin-bottom: 18px;
+    }
+    .upload-zone:hover, .upload-zone.drag {
+      border-color: #6B46C1;
+      background: #f3f0ff;
+    }
+    .upload-zone input { display: none; }
+    .upload-icon { font-size: 32px; margin-bottom: 8px; }
+    .upload-text { color: #1a1a4e; font-size: 14px; font-weight: 500; margin-bottom: 4px; }
+    .upload-hint { color: #9ca3af; font-size: 12px; }
+    .upload-name { color: #6B46C1; font-size: 13px; font-weight: 600; }
+    .upload-change { color: #9ca3af; font-size: 11px; margin-top: 3px; }
+
+    /* ── Field ────────────────────────────────────────── */
+    .field { margin-bottom: 16px; }
+    .field label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      color: #374151;
+      margin-bottom: 6px;
+    }
+    .field input {
+      width: 100%;
+      background: #f9fafb;
+      border: 1.5px solid #e5e7eb;
+      border-radius: 10px;
+      padding: 11px 14px;
+      color: #1a1a4e;
+      font-size: 15px;
+      font-family: 'Inter', sans-serif;
+      outline: none;
+      transition: border-color .2s, box-shadow .2s;
+    }
+    .field input:focus {
+      border-color: #6B46C1;
+      box-shadow: 0 0 0 3px rgba(107,70,193,.10);
+      background: #fff;
+    }
+    .field input::placeholder { color: #9ca3af; font-size: 14px; }
+
+    /* ── Buttons ──────────────────────────────────────── */
+    .btn {
+      width: 100%;
+      padding: 13px;
+      border: none;
+      border-radius: 10px;
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity .2s, transform .1s;
+      margin-bottom: 10px;
+      letter-spacing: .01em;
+    }
+    .btn:disabled { opacity: .4; cursor: not-allowed; }
+    .btn:active:not(:disabled) { transform: scale(.99); }
+    .btn-primary {
+      background: linear-gradient(135deg, #6B46C1 0%, #7C3AED 100%);
+      color: #fff;
+    }
+    .btn-ghost {
+      background: transparent;
+      border: 1.5px solid #e5e7eb;
+      color: #6b7280;
+      font-size: 13px;
+      padding: 10px;
+    }
+
+    /* ── Error ────────────────────────────────────────── */
+    .alert-error {
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      border-radius: 10px;
+      padding: 12px 14px;
+      margin-bottom: 14px;
+      font-size: 13px;
+      color: #dc2626;
+      display: none;
+    }
+
+    /* ── Divider ──────────────────────────────────────── */
+    .divider {
+      border: none;
+      border-top: 1px solid #f3f4f6;
+      margin: 20px 0;
+    }
+
+    /* ── Agent card ───────────────────────────────────── */
+    .agent-card {
+      background: #faf9ff;
+      border: 1px solid #ede9fe;
+      border-radius: 12px;
+      padding: 14px 16px;
+      margin-bottom: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .agent-label { font-size: 10px; color: #9ca3af; font-weight: 600; text-transform: uppercase; letter-spacing: .08em; margin-bottom: 3px; }
+    .agent-name  { font-size: 14px; color: #1a1a4e; font-weight: 600; }
+    .agent-meta  { font-size: 12px; color: #6B46C1; text-align: right; font-weight: 500; }
+
+    /* ── Disponible box ───────────────────────────────── */
+    .disponible-box {
+      background: linear-gradient(135deg, #1a1a4e 0%, #2d2a7a 100%);
+      border-radius: 16px;
+      padding: 28px 20px;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .disponible-label {
+      font-size: 10px;
+      color: rgba(255,255,255,.6);
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+      font-weight: 500;
+    }
+    .disponible-value {
+      font-size: 38px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+    .disponible-value.pos { color: #c9a84c; }
+    .disponible-value.neg { color: #f87171; }
+    .disponible-periodo {
+      margin-top: 8px;
+      font-size: 11px;
+      color: rgba(255,255,255,.45);
+    }
+
+    /* ── Success ──────────────────────────────────────── */
+    .success-box { text-align: center; padding: 12px 0 8px; }
+    .success-icon { font-size: 52px; margin-bottom: 14px; }
+    .success-title { font-size: 22px; font-weight: 700; color: #1a1a4e; margin-bottom: 8px; }
+    .success-sub { font-size: 14px; color: #6b7280; line-height: 1.6; }
+
+    /* ── Footer ───────────────────────────────────────── */
+    .footer {
+      margin-top: 18px;
+      text-align: center;
+      font-size: 11px;
+      color: #9ca3af;
+    }
+    .footer a { color: #6B46C1; text-decoration: none; }
+
+    /* ── Spin ─────────────────────────────────────────── */
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .spin { display: inline-block; animation: spin .8s linear infinite; }
+
+    @keyframes fadeIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:none; } }
+    .fade-in { animation: fadeIn .3s ease; }
+  </style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- Logo -->
+  <div class="logo">
+    <div class="logo-name">
+      <span class="w">Finan</span><span class="z">Zone</span>
+    </div>
+    <div class="logo-sub">Broker de Créditos Personales</div>
+    <div>
+      <span class="haberia-badge">
+        <span>✦</span>
+        Tecnología <span class="dot">HABER-IA</span>
+      </span>
+    </div>
+  </div>
+
+  <!-- Card -->
+  <div class="card">
+
+    <!-- ── STEP 1: Upload ── -->
+    <div id="stepUpload">
+      <div class="section-title">Calculá tu disponible</div>
+
+      <div class="upload-zone" id="uploadZone"
+           ondragover="event.preventDefault(); this.classList.add('drag')"
+           ondragleave="this.classList.remove('drag')"
+           ondrop="handleDrop(event)"
+           onclick="document.getElementById('fileInput').click()">
+        <input type="file" id="fileInput" accept=".pdf,.jpg,.jpeg,.png" onchange="handleFileInput(event)"/>
+        <div id="uploadPrompt">
+          <div class="upload-icon">📄</div>
+          <div class="upload-text">Subí tu recibo de sueldo</div>
+          <div class="upload-hint">Arrastrá o tocá · PDF, JPG, PNG</div>
+        </div>
+        <div id="uploadReady" style="display:none">
+          <div class="upload-icon">✅</div>
+          <div class="upload-name" id="uploadName"></div>
+          <div class="upload-change">Tocá para cambiar</div>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Teléfono de contacto</label>
+        <input type="tel" id="telefono" placeholder="Ej. 1154321234" maxlength="20" oninput="checkReady()"/>
+      </div>
+
+      <div class="alert-error" id="errorUpload"></div>
+
+      <button class="btn btn-primary" id="btnAnalizar" onclick="analizar()" disabled>
+        Calcular disponible
+      </button>
+    </div>
+
+    <!-- ── STEP 2: Result ── -->
+    <div id="stepResult" style="display:none" class="fade-in">
+
+      <!-- Agent -->
+      <div class="agent-card">
+        <div>
+          <div class="agent-label">Agente</div>
+          <div class="agent-name" id="resNombre"></div>
+        </div>
+        <div style="text-align:right">
+          <div class="agent-label">CUIL · Legajo</div>
+          <div class="agent-meta" id="resMeta"></div>
+        </div>
+      </div>
+
+      <!-- Disponible -->
+      <div class="disponible-box">
+        <div class="disponible-label">Importe disponible para nuevas deducciones</div>
+        <div class="disponible-value" id="resDisponible"></div>
+        <div class="disponible-periodo" id="resPeriodo"></div>
+      </div>
+
+      <!-- Phone confirm -->
+      <div class="field">
+        <label>Confirmá tu teléfono para que te contactemos</label>
+        <input type="tel" id="telefonoConfirm" placeholder="11 XXXX-XXXX" maxlength="20"/>
+      </div>
+
+      <div class="alert-error" id="errorSubmit"></div>
+
+      <button class="btn btn-primary" id="btnEnviar" onclick="enviarSolicitud()">
+        Solicitar crédito →
+      </button>
+      <button class="btn btn-ghost" onclick="resetForm()">Nuevo cálculo</button>
+    </div>
+
+    <!-- ── STEP 3: Success ── -->
+    <div id="stepSuccess" style="display:none" class="fade-in">
+      <div class="success-box">
+        <div class="success-icon">🎉</div>
+        <div class="success-title">¡Solicitud enviada!</div>
+        <div class="success-sub">Un asesor de FinanZone te va a contactar<br/>a la brevedad al número indicado.</div>
+      </div>
+      <hr class="divider"/>
+      <button class="btn btn-ghost" onclick="resetForm()">Nueva consulta</button>
+    </div>
+
+  </div>
+
+  <div class="footer">
+    Tus datos están protegidos · <a href="https://www.finanzone.com.ar" target="_blank">finanzone.com.ar</a>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════
+// CONFIG — ajustar al deployar
+// ═══════════════════════════════════════════
+const API_PROCESAR   = "https://haberia.pages.dev/api/procesar";
+const API_SOLICITUD  = "https://haberia.pages.dev/api/widget-solicitud";
+
+// ═══════════════════════════════════════════
+// PROMPT HABER-IA (completo)
+// ═══════════════════════════════════════════
+const SYSTEM_PROMPT = `Eres un asistente especializado en analizar recibos de sueldo de la Provincia de Buenos Aires.
+Si el documento es un "Certificado de Haberes" devuelve: {"error": "certificado"}
+Si es un recibo de sueldo, extrae los datos según el tipo de organismo:
+
+CAMPO COMÚN (todos los recibos):
+- nombre, legajo, dni, cuil, mes_anio (normalizar a mayúsculas, ej: "ENERO 2026")
+- tipo_recibo: "SEGURIDAD" si es Policía/Ministerio de Seguridad, "SALUD" si es Ministerio de Salud, "OTRO" si es otro organismo
+
+CAMPOS SOLO PARA SEGURIDAD (tipo_recibo = "SEGURIDAD"):
+- haber_neto_mes_aumento: campo "HABER NETO MES AUMENTO (1-2-3)", si no existe usar "HABER NETO LEY (1-2)"
+- total_otros_descuentos: campo TOTAL OTROS DESCUENTOS (4)
+- salario_familiar: ítems SALARIO FAMILIAR en haberes, 0 si no existe
+- prest_crjyp: cód 0410. Usar SOLO el importe del renglón principal. 0 si no existe.
+- prest_sin_vivienda: cód 0490, 0 si no existe
+- prest_serv_sociales: PREST.SERVIC.SOCIALES, 0 si no existe
+- cuota_alimentos (cód 0430): Usar SOLO el importe del renglón principal. 0 si no existe.
+- embargo (cód 0510), ioma_conyuge, turismo_serv_social (cód 0280): 0 si no existen
+- conceptos_20xxx: suma de importes en HABERES cuyo código sea exactamente 5 dígitos empezando con "20". 0 si no hay.
+- creditos_pendientes: importe de "CRED. PTES" en el recibo, 0 si no existe
+- ayuda_escolar: importe de AYUDA ESCOLAR en haberes, 0 si no existe
+- distancia_s_aporte: importe de DISTANCIA S/APORTE (cód. 0180), 0 si no existe
+- cod_destino: código numérico del campo CÓD. DESTINO
+- antiguedad: años. SOLO si existe el campo. Si no, 0.
+- cred_ptes_formato: "ok", "adulterado", o "ausente"
+
+CAMPOS SOLO PARA SALUD (tipo_recibo = "SALUD"):
+- total_remunerativo, ajuste_hab, aportes_previsionales, cuota_sindical, afiliaciones_salud, desc_mutuales_salud
+
+Devuelve ÚNICAMENTE el JSON sin texto ni backticks.`;
+
+const CODIGOS_SIN_DESTINO = ["33008889"];
+const MESES_ES = ["ENERO","FEBRERO","MARZO","ABRIL","MAYO","JUNIO","JULIO","AGOSTO","SEPTIEMBRE","OCTUBRE","NOVIEMBRE","DICIEMBRE"];
+
+// ── State ────────────────────────────────
+let currentFile = null;
+let currentData = null;
+
+// ── Helpers ──────────────────────────────
+function fmt(n) {
+  return (n||0).toLocaleString("es-AR", { style:"currency", currency:"ARS", minimumFractionDigits:2 });
+}
+
+function calcular(d) {
+  const neto_base = d.haber_neto_mes_aumento - d.conceptos_20xxx - d.salario_familiar
+    - d.ayuda_escolar - d.distancia_s_aporte - d.ioma_conyuge - d.cuota_alimentos - d.embargo;
+  const cupo_maximo = neto_base * 0.30;
+  const disponible = cupo_maximo - d.total_otros_descuentos + d.prest_crjyp
+    + d.prest_sin_vivienda + d.prest_serv_sociales + d.cuota_alimentos
+    + d.embargo + d.ioma_conyuge + d.turismo_serv_social;
+  return { disponible, sin_destino: CODIGOS_SIN_DESTINO.includes(d.cod_destino) };
+}
+
+function calcularSalud(d) {
+  const base = d.total_remunerativo - d.ajuste_hab;
+  const aportes_recalc = d.total_remunerativo > 0 ? (d.aportes_previsionales / d.total_remunerativo) * base : 0;
+  const neto_base = base - aportes_recalc - (d.cuota_sindical||0);
+  const cupo_maximo = neto_base * 0.30;
+  const disponible = cupo_maximo - d.afiliaciones_salud - d.desc_mutuales_salud;
+  return { disponible, sin_destino: false };
+}
+
+// ── File handling ─────────────────────────
+function handleDrop(e) {
+  e.preventDefault();
+  document.getElementById("uploadZone").classList.remove("drag");
+  handleFile(e.dataTransfer.files[0]);
+}
+function handleFileInput(e) { handleFile(e.target.files[0]); }
+
+function handleFile(f) {
+  if (!f) return;
+  if (!["application/pdf","image/jpeg","image/jpg","image/png"].includes(f.type)) {
+    showError("errorUpload", "Formato no válido. Usá PDF, JPG o PNG."); return;
+  }
+  currentFile = f;
+  document.getElementById("uploadPrompt").style.display = "none";
+  document.getElementById("uploadReady").style.display  = "block";
+  document.getElementById("uploadName").textContent = f.name;
+  document.getElementById("errorUpload").style.display = "none";
+  checkReady();
+}
+
+function checkReady() {
+  const tel = document.getElementById("telefono").value.trim();
+  document.getElementById("btnAnalizar").disabled = !(currentFile && tel.length >= 6);
+}
+
+// ── Analizar ──────────────────────────────
+async function analizar() {
+  const btn = document.getElementById("btnAnalizar");
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spin">⟳</span> Analizando…';
+  document.getElementById("errorUpload").style.display = "none";
+
+  try {
+    const base64 = await fileToBase64(currentFile);
+    const isImage = currentFile.type.startsWith("image/");
+    const mediaType = currentFile.type === "image/jpg" ? "image/jpeg" : currentFile.type;
+    const contentBlock = isImage
+      ? { type:"image", source:{ type:"base64", media_type:mediaType, data:base64 } }
+      : { type:"document", source:{ type:"base64", media_type:"application/pdf", data:base64 } };
+
+    const resp = await fetch(API_PROCESAR, {
+      method:"POST", headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({ contentBlock, system: SYSTEM_PROMPT, cacheKey: null })
+    });
+    if (!resp.ok) throw new Error("Error del servidor " + resp.status);
+    const apiData = await resp.json();
+    if (apiData.error) throw new Error(apiData.error.message || "Error API");
+
+    const text = (apiData.content||[]).map(b=>b.text||"").join("").trim();
+    if (!text) throw new Error("Respuesta vacía.");
+    let parsed;
+    try { parsed = JSON.parse(text.replace(/```json|```/g,"").trim()); }
+    catch { throw new Error("No se pudo leer la respuesta."); }
+    if (parsed.error === "certificado") throw new Error("certificado");
+
+    const norm = {
+      nombre: parsed.nombre||"", legajo: parsed.legajo||"", dni: parsed.dni||"",
+      cuil: parsed.cuil||"", mes_anio: (parsed.mes_anio||"").toUpperCase(),
+      tipo_recibo: parsed.tipo_recibo||"SEGURIDAD",
+    };
+    ["haber_neto_mes_aumento","total_otros_descuentos","salario_familiar","prest_crjyp",
+     "prest_sin_vivienda","prest_serv_sociales","cuota_alimentos","embargo","ioma_conyuge",
+     "turismo_serv_social","conceptos_20xxx","creditos_pendientes","ayuda_escolar","distancia_s_aporte",
+     "total_remunerativo","ajuste_hab","aportes_previsionales","cuota_sindical","afiliaciones_salud","desc_mutuales_salud"
+    ].forEach(k => norm[k] = parseFloat(parsed[k])||0);
+    norm.cod_destino = parsed.cod_destino||"";
+
+    const calc = norm.tipo_recibo === "SALUD" ? calcularSalud(norm) : calcular(norm);
+    currentData = { ...norm, ...calc };
+    mostrarResultado();
+
+  } catch(e) {
+    const msg = e.message === "certificado"
+      ? "Esto es un Certificado de Haberes. Por favor subí el Recibo de Sueldo."
+      : "Error al procesar el recibo: " + e.message;
+    showError("errorUpload", msg);
+    btn.disabled = false;
+    btn.innerHTML = "Calcular disponible";
+  }
+}
+
+// ── Mostrar resultado ─────────────────────
+function mostrarResultado() {
+  const d = currentData;
+  document.getElementById("resNombre").textContent = d.nombre || "—";
+  document.getElementById("resMeta").textContent = `${d.cuil||d.dni} · ${d.legajo}`;
+  document.getElementById("resPeriodo").textContent = d.mes_anio || "";
+
+  const dispEl = document.getElementById("resDisponible");
+  dispEl.textContent = fmt(d.disponible);
+  dispEl.className = "disponible-value " + (d.disponible >= 0 ? "pos" : "neg");
+
+  document.getElementById("telefonoConfirm").value = document.getElementById("telefono").value;
+  document.getElementById("stepUpload").style.display = "none";
+  document.getElementById("stepResult").style.display = "block";
+  document.getElementById("btnAnalizar").disabled = false;
+  document.getElementById("btnAnalizar").innerHTML = "Calcular disponible";
+}
+
+// ── Enviar solicitud ──────────────────────
+async function enviarSolicitud() {
+  const tel = document.getElementById("telefonoConfirm").value.trim();
+  if (!tel || tel.length < 6) { showError("errorSubmit","Ingresá un número de teléfono válido."); return; }
+
+  const btn = document.getElementById("btnEnviar");
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spin">⟳</span> Enviando…';
+  document.getElementById("errorSubmit").style.display = "none";
+
+  try {
+    const fd = new FormData();
+    fd.append("recibo",      currentFile, currentFile.name);
+    fd.append("telefono",    tel);
+    fd.append("nombre",      currentData.nombre);
+    fd.append("legajo",      currentData.legajo);
+    fd.append("cuil",        currentData.cuil || currentData.dni);
+    fd.append("mes_anio",    currentData.mes_anio);
+    fd.append("disponible",  fmt(currentData.disponible));
+    fd.append("tipo_recibo", currentData.tipo_recibo);
+
+    const resp = await fetch(API_SOLICITUD, { method:"POST", body: fd });
+    if (!resp.ok) throw new Error("Error " + resp.status);
+
+    document.getElementById("stepResult").style.display  = "none";
+    document.getElementById("stepSuccess").style.display = "block";
+  } catch {
+    showError("errorSubmit","No se pudo enviar. Intentá de nuevo.");
+    btn.disabled = false;
+    btn.innerHTML = "Solicitar crédito →";
+  }
+}
+
+// ── Utils ─────────────────────────────────
+function fileToBase64(file) {
+  return new Promise((res, rej) => {
+    const r = new FileReader();
+    r.onload  = () => res(r.result.split(",")[1]);
+    r.onerror = () => rej(new Error("Error leyendo el archivo."));
+    r.readAsDataURL(file);
+  });
+}
+function showError(id, msg) {
+  const el = document.getElementById(id);
+  el.textContent = "⚠️ " + msg;
+  el.style.display = "block";
+}
+function resetForm() {
+  currentFile = null; currentData = null;
+  document.getElementById("fileInput").value = "";
+  document.getElementById("uploadPrompt").style.display = "block";
+  document.getElementById("uploadReady").style.display  = "none";
+  document.getElementById("telefono").value = "";
+  document.getElementById("telefonoConfirm").value = "";
+  document.getElementById("errorUpload").style.display = "none";
+  document.getElementById("errorSubmit").style.display = "none";
+  document.getElementById("btnAnalizar").disabled = true;
+  document.getElementById("stepResult").style.display  = "none";
+  document.getElementById("stepSuccess").style.display = "none";
+  document.getElementById("stepUpload").style.display  = "block";
+}
+</script>
+</body>
+</html>
